@@ -92,6 +92,13 @@ void CArrangedFigureRegionCheckDlg::OnPaint()
 			dc.Rectangle(i * 100, 0, 101 + i * 100, 100);
 		}
 
+		if (m_index != -1)
+		{
+			dc.SelectObject(&m_select_brush);
+			dc.SelectObject(&m_select_pen);
+			dc.Rectangle(m_index * 100, 0, 101 + m_index * 100, 100);
+		}
+		
 		dc.SelectObject(p_old_brush);
 		dc.SelectObject(p_old_pen);
 		//CDialogEx::OnPaint();
