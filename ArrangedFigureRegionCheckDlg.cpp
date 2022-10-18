@@ -118,39 +118,20 @@ void CArrangedFigureRegionCheckDlg::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	if (point.y < 100)
 	{
-
-		if (m_index != -1)
-		{
-			CClientDC dc(this);
-
-			CBrush* p_old_brush = dc.SelectObject(&m_unselect_brush);
-			CPen* p_old_pen = dc.SelectObject(&m_unselect_pen);
-
-			dc.Rectangle(m_index * 100, 0, 101 + m_index * 100, 100);
-
-			dc.SelectObject(p_old_brush);
-			dc.SelectObject(p_old_pen);
-		}
-
+		m_index = -1;
+		
 		for (int i = 0; i < 6; i++)
 		{
 			if (point.x < 100 + i * 100)
 			{
-				CClientDC dc(this);
-
-				CBrush* p_old_brush = dc.SelectObject(&m_select_brush);
-				CPen* p_old_pen = dc.SelectObject(&m_select_pen);
-
-				dc.Rectangle(i * 100, 0, 101 + i * 100, 100);
-
-				dc.SelectObject(p_old_brush);
-				dc.SelectObject(p_old_pen);
-
 				m_index = i;
 				break;
 			}
 		}
+		
+		Invalidate();	// WM_PAINT -> OnPaint
 	}
+	
 	
 
 	CDialogEx::OnLButtonDown(nFlags, point);
