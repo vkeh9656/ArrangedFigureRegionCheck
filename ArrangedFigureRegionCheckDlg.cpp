@@ -18,9 +18,18 @@
 
 
 CArrangedFigureRegionCheckDlg::CArrangedFigureRegionCheckDlg(CWnd* pParent /*=nullptr*/)
-	: CDialogEx(IDD_ARRANGEDFIGUREREGIONCHECK_DIALOG, pParent)
+	: CDialogEx(IDD_ARRANGEDFIGUREREGIONCHECK_DIALOG, pParent),
+	m_select_brush(RGB(0, 200, 255)),
+	m_unselect_brush(RGB(0, 80, 200)),
+	m_select_pen(PS_SOLID, 1, RGB(0, 255, 255)),
+	m_unselect_pen(PS_SOLID, 1, RGB(0, 0, 128))
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
+
+	//m_select_brush.CreateSolidBrush(RGB(0, 200, 255));
+	//m_unselect_brush.CreateSolidBrush(RGB(0, 80, 200));
+	//m_select_pen.CreatePen(PS_SOLID, 1, RGB(0, 255, 255));
+	//m_unselect_pen.CreatePen(PS_SOLID, 1, RGB(0, 0, 255));
 }
 
 void CArrangedFigureRegionCheckDlg::DoDataExchange(CDataExchange* pDX)
@@ -31,6 +40,7 @@ void CArrangedFigureRegionCheckDlg::DoDataExchange(CDataExchange* pDX)
 BEGIN_MESSAGE_MAP(CArrangedFigureRegionCheckDlg, CDialogEx)
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
+	ON_WM_LBUTTONDOWN()
 END_MESSAGE_MAP()
 
 
@@ -56,10 +66,9 @@ BOOL CArrangedFigureRegionCheckDlg::OnInitDialog()
 
 void CArrangedFigureRegionCheckDlg::OnPaint()
 {
+	CPaintDC dc(this); // 그리기를 위한 디바이스 컨텍스트입니다.
 	if (IsIconic())
 	{
-		CPaintDC dc(this); // 그리기를 위한 디바이스 컨텍스트입니다.
-
 		SendMessage(WM_ICONERASEBKGND, reinterpret_cast<WPARAM>(dc.GetSafeHdc()), 0);
 
 		// 클라이언트 사각형에서 아이콘을 가운데에 맞춥니다.
@@ -75,7 +84,17 @@ void CArrangedFigureRegionCheckDlg::OnPaint()
 	}
 	else
 	{
-		CDialogEx::OnPaint();
+		CBrush *p_old_brush = dc.SelectObject(&m_unselect_brush);
+		CPen* p_old_pen = dc.SelectObject(&m_unselect_pen);
+
+		for (int i = 0; i < 6; i++)
+		{
+			dc.Rectangle(i * 100, 0, 101 + i * 100, 100);
+		}
+
+		dc.SelectObject(p_old_brush);
+		dc.SelectObject(p_old_pen);
+		//CDialogEx::OnPaint();
 	}
 }
 
@@ -86,3 +105,46 @@ HCURSOR CArrangedFigureRegionCheckDlg::OnQueryDragIcon()
 	return static_cast<HCURSOR>(m_hIcon);
 }
 
+
+
+void CArrangedFigureRegionCheckDlg::OnLButtonDown(UINT nFlags, CPoint point)
+{
+	if (point.y < 100)
+	{
+
+		if (m_index != -1)
+		{
+			CClientDC dc(this);
+
+			CBrush* p_old_brush = dc.SelectObject(&m_unselect_brush);
+			CPen* p_old_pen = dc.SelectObject(&m_unselect_pen);
+
+			dc.Rectangle(m_index * 100, 0, 101 + m_index * 100, 100);
+
+			dc.SelectObject(p_old_brush);
+			dc.SelectObject(p_old_pen);
+		}
+
+		for (int i = 0; i < 6; i++)
+		{
+			if (point.x < 100 + i * 100)
+			{
+				CClientDC dc(this);
+
+				CBrush* p_old_brush = dc.SelectObject(&m_select_brush);
+				CPen* p_old_pen = dc.SelectObject(&m_select_pen);
+
+				dc.Rectangle(i * 100, 0, 101 + i * 100, 100);
+
+				dc.SelectObject(p_old_brush);
+				dc.SelectObject(p_old_pen);
+
+				m_index = i;
+				break;
+			}
+		}
+	}
+	
+
+	CDialogEx::OnLButtonDown(nFlags, point);
+}
