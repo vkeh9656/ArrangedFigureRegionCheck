@@ -118,17 +118,9 @@ void CArrangedFigureRegionCheckDlg::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	if (point.y < 100)
 	{
-		m_index = -1;
-		
-		for (int i = 0; i < 6; i++)
-		{
-			if (point.x < 100 + i * 100)
-			{
-				m_index = i;
-				break;
-			}
-		}
-		
+		m_index = point.x / 100;
+		if (m_index >= 6) m_index = -1;
+
 		Invalidate();	// WM_PAINT -> OnPaint
 	}
 	
