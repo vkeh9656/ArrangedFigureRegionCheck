@@ -86,17 +86,23 @@ void CArrangedFigureRegionCheckDlg::OnPaint()
 	{
 		CBrush *p_old_brush = dc.SelectObject(&m_unselect_brush);
 		CPen* p_old_pen = dc.SelectObject(&m_unselect_pen);
+		int x, y;
 
-		for (int i = 0; i < 6; i++)
+		for (y = 0; y < 3; y++)
 		{
-			dc.Rectangle(i * 100, 0, 101 + i * 100, 100);
+			for (x = 0; x < 6; x++)
+			{
+				dc.Rectangle(50 + x * 100, 50+ y * 100, 151 + x * 100, 151 + y * 100);
+			}
 		}
 
 		if (m_index != -1)
 		{
+			x = m_index % 7;
+			y = m_index / 7;
 			dc.SelectObject(&m_select_brush);
 			dc.SelectObject(&m_select_pen);
-			dc.Rectangle(m_index * 100, 0, 101 + m_index * 100, 100);
+			dc.Ellipse(x * 100, y * 100, 101 + x * 100, 101 + y * 100);
 		}
 		
 		dc.SelectObject(p_old_brush);
@@ -116,14 +122,13 @@ HCURSOR CArrangedFigureRegionCheckDlg::OnQueryDragIcon()
 
 void CArrangedFigureRegionCheckDlg::OnLButtonDown(UINT nFlags, CPoint point)
 {
-	if (point.y < 100)
-	{
-		m_index = point.x / 100;
-		if (m_index >= 6) m_index = -1;
-
-		Invalidate();	// WM_PAINT -> OnPaint
-	}
+	point.x = point.x / 100; // 0 ~ 6
+	point.y = point.y / 100; // 0 ~ 3
 	
+	if (point.x >= 7 || point.y >= 4) m_index = -1;
+	else m_index = point.y * 7 + point.x; // 2차원 배열의 1차원 처리
+
+	Invalidate();	// WM_PAINT -> OnPaint
 	
 
 	CDialogEx::OnLButtonDown(nFlags, point);

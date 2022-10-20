@@ -11,8 +11,9 @@ class CArrangedFigureRegionCheckDlg : public CDialogEx
 private:
 	CBrush m_select_brush, m_unselect_brush;
 	CPen m_select_pen, m_unselect_pen;
-
-	int m_index = -1; // 0~5
+	int m_index = -1; // 0~27
+	//int m_index_x = -1; // 0~6
+	//int m_index_y = -1; // 0~3
 
 // 생성입니다.
 public:
