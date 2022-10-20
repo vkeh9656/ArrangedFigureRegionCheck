@@ -92,7 +92,7 @@ void CArrangedFigureRegionCheckDlg::OnPaint()
 		{
 			for (x = 0; x < 6; x++)
 			{
-				dc.Rectangle(50 + x * 100, 50+ y * 100, 151 + x * 100, 151 + y * 100);
+				dc.Rectangle(30+50 + x * 100, 30 + 50+ y * 100, 30 + 151 + x * 100, 30 + 151 + y * 100);
 			}
 		}
 
@@ -102,7 +102,7 @@ void CArrangedFigureRegionCheckDlg::OnPaint()
 			y = m_index / 7;
 			dc.SelectObject(&m_select_brush);
 			dc.SelectObject(&m_select_pen);
-			dc.Ellipse(x * 100, y * 100, 101 + x * 100, 101 + y * 100);
+			dc.Ellipse(30 + x * 100, 30 + y * 100, 30 + 101 + x * 100, 30 + 101 + y * 100);
 		}
 		
 		dc.SelectObject(p_old_brush);
@@ -122,8 +122,11 @@ HCURSOR CArrangedFigureRegionCheckDlg::OnQueryDragIcon()
 
 void CArrangedFigureRegionCheckDlg::OnLButtonDown(UINT nFlags, CPoint point)
 {
-	point.x = point.x / 100; // 0 ~ 6
-	point.y = point.y / 100; // 0 ~ 3
+	if (point.x >= 30 && point.y >= 30)
+	{
+		point.x = (point.x - 30) / 100; // 0 ~ 6
+		point.y = (point.y - 30) / 100; // 0 ~ 3
+	}
 	
 	if (point.x >= 7 || point.y >= 4) m_index = -1;
 	else m_index = point.y * 7 + point.x; // 2차원 배열의 1차원 처리
